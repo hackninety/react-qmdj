@@ -108,20 +108,6 @@ function App() {
           <BasicInfoPanel qMDJData={qMDJData} trueSolarInfo={trueSolarInfo} originalDate={selectedDate} />
         </motion.div>
 
-        {/* 断局指引 */}
-        <motion.div
-          className="glass-card rounded-xl p-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.05 }}
-        >
-          <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
-            <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
-            断局指引
-          </h2>
-          <AnalysisPanel qMDJData={qMDJData} />
-        </motion.div>
-
         {/* 九宫格 */}
         <motion.div
           className="flex justify-center"
@@ -141,6 +127,20 @@ function App() {
               </div>
             )}
           </div>
+        </motion.div>
+
+        {/* 断局指引 */}
+        <motion.div
+          className="glass-card rounded-xl p-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.15 }}
+        >
+          <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
+            <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
+            断局指引
+          </h2>
+          <AnalysisPanel qMDJData={qMDJData} />
         </motion.div>
 
         {/* 九宫详解 */}
