@@ -73,8 +73,8 @@
   --destructive: oklch(0.55 0.22 27);
   --destructive-foreground: oklch(0.98 0.01 80);
 
-  --border: oklch(0.90 0.01 60);
-  --input: oklch(0.90 0.01 60);
+  --border: oklch(0.82 0.015 60);
+  --input: oklch(0.82 0.015 60);
   --ring: oklch(0.45 0.15 85);
 }
 
@@ -148,4 +148,10 @@
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.06);
   }
+}
+
+/* 亮色模式下 glass-card 使用深色边框 */
+.light .glass-card {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
