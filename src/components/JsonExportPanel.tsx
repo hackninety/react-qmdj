@@ -25,6 +25,9 @@ function buildExportJSON(qMDJData: any, trueSolarInfo?: { offsetMinutes: number;
     }
   }
 
+  // 综合分析中剔除 suggestions，让 AI 自行分析
+  const { suggestions, ...analysisRest } = (qMDJData.analysis || {}) as Record<string, any>;
+
   return {
     排盘系统: '奇门遁甲',
     基础信息: {
@@ -58,7 +61,7 @@ function buildExportJSON(qMDJData: any, trueSolarInfo?: { offsetMinutes: number;
       宫位: qMDJData.zhiShiGong,
     },
     九宫详解: gongDetails,
-    综合分析: qMDJData.analysis || {},
+    综合分析: analysisRest,
   };
 }
 
