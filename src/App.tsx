@@ -52,14 +52,22 @@ function App() {
     setIsDark(!isDark);
   };
 
-  // 自定义排盘：转换为北京时间 → 真太阳时修正
+  // 自定义排盘：有经度时转北京时间+真太阳时，无经度时沿用本地时间
   const handleDateConfirm = (options: QimenOptions) => {
     try {
-      const beijingDate = toBeijingTime(options.date);
-      const lng = options.longitude;
-      const { trueSolarDate, offsetMinutes } = toTrueSolarTime(beijingDate, lng);
+      let calcDate = options.date;
+      let solarInfo: typeof trueSolarInfo = null;
 
-      const data = qimen.calculate(trueSolarDate, {
+      if (options.longitude != null) {
+        // 选择了中国城市 → 转北京时间 + 真太阳时修正
+        const beijingDate = toBeijingTime(options.date);
+        const lng = options.longitude;
+        const { trueSolarDate, offsetMinutes } = toTrueSolarTime(beijingDate, lng);
+        calcDate = trueSolarDate;
+        solarInfo = { offsetMinutes, longitude: lng, trueSolarDate };
+      }
+
+      const data = qimen.calculate(calcDate, {
         type: options.type,
         method: options.method,
         purpose: options.purpose,
@@ -67,7 +75,7 @@ function App() {
       });
       setQMDJData(data);
       setSelectedDate(options.date);
-      setTrueSolarInfo({ offsetMinutes, longitude: lng, trueSolarDate });
+      setTrueSolarInfo(solarInfo);
     } catch (error) {
       console.error('自定义排盘计算失败:', error);
     }

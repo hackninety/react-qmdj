@@ -10,7 +10,7 @@ export interface QimenOptions {
   method: string;
   purpose: string;
   location: string;
-  longitude: number;
+  longitude?: number;
 }
 
 interface DatePickerDialogProps {
@@ -50,6 +50,7 @@ export function DatePickerDialog({ open, onClose, onConfirm, currentDate }: Date
   const [purpose, setPurpose] = useState('综合');
 
   // 地点 — 省/市/区三级联动
+  const [useLocation, setUseLocation] = useState(false);
   const [provinceIdx, setProvinceIdx] = useState(0);
   const [cityIdx, setCityIdx] = useState(0);
   const [districtIdx, setDistrictIdx] = useState(0);
@@ -96,8 +97,13 @@ export function DatePickerDialog({ open, onClose, onConfirm, currentDate }: Date
     const [y, m, d] = dateStr.split('-').map(Number);
     const [h, min] = timeStr.split(':').map(Number);
     const date = new Date(y, m - 1, d, h, min);
-    const lng = districts[districtIdx]?.longitude ?? 116.41;
-    onConfirm({ date, type, method, purpose, location: locationName, longitude: lng });
+    if (useLocation) {
+      const lng = districts[districtIdx]?.longitude ?? 116.41;
+      onConfirm({ date, type, method, purpose, location: locationName, longitude: lng });
+    } else {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '未知时区';
+      onConfirm({ date, type, method, purpose, location: tz });
+    }
   };
 
   const handleResetNow = () => {
@@ -201,41 +207,58 @@ export function DatePickerDialog({ open, onClose, onConfirm, currentDate }: Date
                 </div>
               </div>
 
-              {/* 地点 — 省/市/区三级联动 */}
+              {/* 地点 — 可选 */}
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1">
                   <MapPin className="w-3 h-3" />
                   地点
+                  <button
+                    type="button"
+                    onClick={() => setUseLocation(!useLocation)}
+                    className={`ml-auto text-[10px] px-2 py-0.5 rounded-full border transition-all ${
+                      useLocation
+                        ? 'bg-[var(--color-gold)]/20 border-[var(--color-gold)]/50 text-[var(--color-gold)]'
+                        : 'bg-secondary/50 border-border/50 text-muted-foreground'
+                    }`}
+                  >
+                    {useLocation ? '已启用' : '使用当前时区'}
+                  </button>
                 </label>
-                <div className="grid grid-cols-3 gap-2">
-                  <select
-                    value={provinceIdx}
-                    onChange={(e) => setProvinceIdx(Number(e.target.value))}
-                    className={selectClass}
-                  >
-                    {PROVINCES.map((p, i) => (
-                      <option key={p.name} value={i}>{p.name}</option>
-                    ))}
-                  </select>
-                  <select
-                    value={cityIdx}
-                    onChange={(e) => setCityIdx(Number(e.target.value))}
-                    className={selectClass}
-                  >
-                    {cities.map((c, i) => (
-                      <option key={c.name} value={i}>{c.name}</option>
-                    ))}
-                  </select>
-                  <select
-                    value={districtIdx}
-                    onChange={(e) => setDistrictIdx(Number(e.target.value))}
-                    className={selectClass}
-                  >
-                    {districts.map((d, i) => (
-                      <option key={d.name} value={i}>{d.name}</option>
-                    ))}
-                  </select>
-                </div>
+                {useLocation ? (
+                  <div className="grid grid-cols-3 gap-2">
+                    <select
+                      value={provinceIdx}
+                      onChange={(e) => setProvinceIdx(Number(e.target.value))}
+                      className={selectClass}
+                    >
+                      {PROVINCES.map((p, i) => (
+                        <option key={p.name} value={i}>{p.name}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={cityIdx}
+                      onChange={(e) => setCityIdx(Number(e.target.value))}
+                      className={selectClass}
+                    >
+                      {cities.map((c, i) => (
+                        <option key={c.name} value={i}>{c.name}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={districtIdx}
+                      onChange={(e) => setDistrictIdx(Number(e.target.value))}
+                      className={selectClass}
+                    >
+                      {districts.map((d, i) => (
+                        <option key={d.name} value={i}>{d.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                ) : (
+                  <div className="px-3 py-2 rounded-lg bg-secondary/30 border border-border/30 text-sm text-muted-foreground">
+                    {Intl.DateTimeFormat().resolvedOptions().timeZone || '未知时区'}
+                  </div>
+                )}
               </div>
 
               {/* 目的 */}
