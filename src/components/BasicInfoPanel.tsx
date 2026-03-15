@@ -47,6 +47,10 @@ export function BasicInfoPanel({ qMDJData, trueSolarInfo, originalDate }: { qMDJ
           <span className="text-muted-foreground">农历</span>
           <span className="text-foreground font-medium">{qMDJData.basicInfo?.lunarDate}</span>
         </div>
+        <div className="flex justify-between items-center">
+          <span className="text-muted-foreground">地区</span>
+          <span className="text-foreground font-medium">{qMDJData.basicInfo?.location}</span>
+        </div>
         {trueSolarInfo && (
           <>
             <div className="flex justify-between items-center">
