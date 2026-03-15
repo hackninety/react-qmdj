@@ -7,14 +7,14 @@ import { AnalysisPanel } from '@/components/AnalysisPanel';
 import { GongDetailPanel } from '@/components/GongDetailPanel';
 import { JsonExportPanel } from '@/components/JsonExportPanel';
 import { DatePickerDialog, type QimenOptions } from '@/components/DatePickerDialog';
-import { toTrueSolarTime } from '@/utils/true-solar-time';
+import { toTrueSolarTime, nowBeijing } from '@/utils/true-solar-time';
 import * as qimen from '@/lib/qimen';
 
 function App() {
   const [qMDJData, setQMDJData] = useState<any>(null);
   const [isDark, setIsDark] = useState(true);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(nowBeijing());
   const [trueSolarInfo, setTrueSolarInfo] = useState<{ offsetMinutes: number; longitude: number; trueSolarDate: Date } | null>(null);
 
   const doCalculate = useCallback((date: Date, opts?: Partial<QimenOptions>) => {
@@ -37,7 +37,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    doCalculate(new Date());
+    doCalculate(nowBeijing());
   }, [doCalculate]);
 
   const toggleTheme = () => {

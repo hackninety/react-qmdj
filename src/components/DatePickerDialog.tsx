@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import { X, CalendarDays, RotateCcw, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PROVINCES } from '@/lib/cities';
+import { nowBeijing } from '@/utils/true-solar-time';
 
 export interface QimenOptions {
   date: Date;
@@ -36,7 +37,7 @@ const PURPOSES = [
 ];
 
 export function DatePickerDialog({ open, onClose, onConfirm, currentDate }: DatePickerDialogProps) {
-  const now = currentDate || new Date();
+  const now = currentDate || nowBeijing();
 
   const pad = (n: number) => String(n).padStart(2, '0');
   const toLocalDateStr = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -67,7 +68,7 @@ export function DatePickerDialog({ open, onClose, onConfirm, currentDate }: Date
   // 当弹窗打开时，同步日期
   useEffect(() => {
     if (open) {
-      const d = currentDate || new Date();
+      const d = currentDate || nowBeijing();
       setDateStr(toLocalDateStr(d));
       setTimeStr(toLocalTimeStr(d));
     }
@@ -100,7 +101,7 @@ export function DatePickerDialog({ open, onClose, onConfirm, currentDate }: Date
   };
 
   const handleResetNow = () => {
-    const n = new Date();
+    const n = nowBeijing();
     setDateStr(toLocalDateStr(n));
     setTimeStr(toLocalTimeStr(n));
   };

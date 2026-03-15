@@ -71,3 +71,31 @@ export function formatOffset(minutes: number): string {
   const sign = minutes >= 0 ? '+' : '';
   return `${sign}${minutes.toFixed(1)} 分钟`;
 }
+
+/**
+ * 将任意 Date 转换为北京时间表示
+ *
+ * 返回一个"伪"Date，其 .getHours() / .getMinutes() 等本地方法
+ * 返回的值 = 北京标准时间 (UTC+8)，而非系统本地时区。
+ *
+ * 原理：Date 内部存 UTC 毫秒，.getHours() 等会加上本机时区偏移。
+ * 我们通过调整内部 UTC 毫秒，令 .getHours() 恰好返回 UTC+8 的值。
+ *
+ * 适用场景：lunar-javascript 的 Lunar.fromDate() 读取本地时间方法，
+ * 因此必须喂入一个"看起来像北京时间"的 Date。
+ */
+export function toBeijingTime(date: Date): Date {
+  // getTimezoneOffset() 返回 UTC - local（分钟），
+  //   JST (UTC+9) → -540，CST (UTC+8) → -480，EST (UTC-5) → +300
+  // 目标：local 表示 = UTC + 8h
+  // 调整量 = (getTimezoneOffset + 480) 分钟
+  const adjustment = (date.getTimezoneOffset() + 480) * 60000;
+  return new Date(date.getTime() + adjustment);
+}
+
+/**
+ * 获取当前北京时间
+ */
+export function nowBeijing(): Date {
+  return toBeijingTime(new Date());
+}
