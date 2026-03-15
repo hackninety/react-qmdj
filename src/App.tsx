@@ -15,7 +15,7 @@ function App() {
   const [isDark, setIsDark] = useState(true);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [trueSolarInfo, setTrueSolarInfo] = useState<{ offsetMinutes: number; longitude: number } | null>(null);
+  const [trueSolarInfo, setTrueSolarInfo] = useState<{ offsetMinutes: number; longitude: number; trueSolarDate: Date } | null>(null);
 
   const doCalculate = useCallback((date: Date, opts?: Partial<QimenOptions>) => {
     try {
@@ -30,7 +30,7 @@ function App() {
       });
       setQMDJData(data);
       setSelectedDate(date);
-      setTrueSolarInfo({ offsetMinutes, longitude: lng });
+      setTrueSolarInfo({ offsetMinutes, longitude: lng, trueSolarDate });
     } catch (error) {
       console.error('排盘计算失败:', error);
     }
@@ -94,27 +94,32 @@ function App() {
       {/* 主体 — 单列从上到下排列 */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-6 space-y-6">
 
-        {/* 基础信息 + 断局指引 — 并排两栏 */}
+        {/* 基础信息 */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          className="glass-card rounded-xl p-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="glass-card rounded-xl p-4">
-            <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
-              <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
-              基础信息
-            </h2>
-            <BasicInfoPanel qMDJData={qMDJData} trueSolarInfo={trueSolarInfo} />
-          </div>
-          <div className="glass-card rounded-xl p-4">
-            <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
-              <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
-              断局指引
-            </h2>
-            <AnalysisPanel qMDJData={qMDJData} />
-          </div>
+          <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
+            <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
+            基础信息
+          </h2>
+          <BasicInfoPanel qMDJData={qMDJData} trueSolarInfo={trueSolarInfo} originalDate={selectedDate} />
+        </motion.div>
+
+        {/* 断局指引 */}
+        <motion.div
+          className="glass-card rounded-xl p-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.05 }}
+        >
+          <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
+            <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
+            断局指引
+          </h2>
+          <AnalysisPanel qMDJData={qMDJData} />
         </motion.div>
 
         {/* 九宫格 */}

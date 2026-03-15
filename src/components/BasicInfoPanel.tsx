@@ -3,9 +3,15 @@ import { getWuxingColorClass } from '@/utils/qmdj-colors';
 interface TrueSolarInfo {
   offsetMinutes: number;
   longitude: number;
+  trueSolarDate: Date;
 }
 
-export function BasicInfoPanel({ qMDJData, trueSolarInfo }: { qMDJData: any; trueSolarInfo?: TrueSolarInfo | null }) {
+function formatDateTime(d: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+export function BasicInfoPanel({ qMDJData, trueSolarInfo, originalDate }: { qMDJData: any; trueSolarInfo?: TrueSolarInfo | null; originalDate?: Date }) {
   if (!qMDJData) {
     return (
       <div className="animate-pulse flex flex-col gap-3">
@@ -26,25 +32,36 @@ export function BasicInfoPanel({ qMDJData, trueSolarInfo }: { qMDJData: any; tru
   const offsetSign = (trueSolarInfo?.offsetMinutes ?? 0) >= 0 ? '+' : '';
   const offsetStr = trueSolarInfo ? `${offsetSign}${trueSolarInfo.offsetMinutes.toFixed(1)}分` : '';
 
+  // 公历显示原始输入时间
+  const displayDate = originalDate ? formatDateTime(originalDate) : qMDJData.basicInfo?.date;
+
   return (
     <div className="space-y-4">
       {/* 日期信息 */}
       <div className="space-y-1.5 text-sm">
         <div className="flex justify-between items-center">
           <span className="text-muted-foreground">公历</span>
-          <span className="text-foreground font-medium">{qMDJData.basicInfo?.date}</span>
+          <span className="text-foreground font-medium">{displayDate}</span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-muted-foreground">农历</span>
           <span className="text-foreground font-medium">{qMDJData.basicInfo?.lunarDate}</span>
         </div>
         {trueSolarInfo && (
-          <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">真太阳时</span>
-            <span className="text-xs text-[var(--color-gold)]">
-              E{trueSolarInfo.longitude.toFixed(1)}° · {offsetStr}
-            </span>
-          </div>
+          <>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">真太阳时</span>
+              <span className="text-foreground font-medium">
+                {formatDateTime(trueSolarInfo.trueSolarDate)}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground text-xs">校准</span>
+              <span className="text-xs text-[var(--color-gold)]">
+                E{trueSolarInfo.longitude.toFixed(1)}° · {offsetStr}
+              </span>
+            </div>
+          </>
         )}
       </div>
 
