@@ -1,43 +1,78 @@
-// 五行及其对应元素颜色的映射辅助函数
-export const getWuxingColorClass = (elementStr: string) => {
-  if (!elementStr) return '';
-  
-  if (['木', '震', '巽', '甲', '乙', '天冲', '天辅', '生门', '伤门', '值符', '六合'].some(x => elementStr.includes(x))) {
-    return 'text-green-600 dark:text-green-400';
+/**
+ * 五行颜色映射工具
+ * 基于 QMDJ 要素返回 Tailwind CSS 颜色类
+ */
+
+// 五行颜色 (使用 CSS 自定义属性)
+const WUXING_CLASSES: Record<string, string> = {
+  // 木 — 绿
+  mu: 'text-[var(--color-wood)]',
+  // 火 — 红
+  huo: 'text-[var(--color-fire)]',
+  // 土 — 土黄
+  tu: 'text-[var(--color-earth)]',
+  // 金 — 金
+  jin: 'text-[var(--color-metal)]',
+  // 水 — 蓝
+  shui: 'text-[var(--color-water)]',
+};
+
+// 元素名称 → 五行 映射
+const ELEMENT_MAP: Record<string, string> = {
+  // 天干
+  '甲': 'mu', '乙': 'mu',
+  '丙': 'huo', '丁': 'huo',
+  '戊': 'tu', '己': 'tu',
+  '庚': 'jin', '辛': 'jin',
+  '壬': 'shui', '癸': 'shui',
+  // 八卦/宫名
+  '坎': 'shui', '坤': 'tu', '震': 'mu', '巽': 'mu',
+  '中': 'tu', '乾': 'jin', '兑': 'jin', '艮': 'tu', '离': 'huo',
+  // 九星
+  '天蓬': 'shui', '天芮': 'tu', '天冲': 'mu', '天辅': 'mu',
+  '天禽': 'tu', '天心': 'jin', '天柱': 'jin', '天任': 'tu', '天英': 'huo',
+  '禽芮': 'tu',
+  // 八门
+  '休门': 'shui', '生门': 'mu', '伤门': 'mu', '杜门': 'tu',
+  '景门': 'huo', '死门': 'tu', '惊门': 'jin', '开门': 'jin',
+  // 八神
+  '值符': 'tu', '腾蛇': 'huo', '太阴': 'jin', '六合': 'mu',
+  '白虎': 'jin', '玄武': 'shui', '九地': 'tu', '九天': 'jin',
+};
+
+export const getWuxingColorClass = (name: string): string => {
+  if (!name) return '';
+  // 直接查找
+  if (ELEMENT_MAP[name]) return WUXING_CLASSES[ELEMENT_MAP[name]] || '';
+  // 部分匹配
+  for (const [key, wuxing] of Object.entries(ELEMENT_MAP)) {
+    if (name.includes(key)) return WUXING_CLASSES[wuxing] || '';
   }
-  if (['火', '离', '丙', '丁', '天英', '景门', '腾蛇'].some(x => elementStr.includes(x))) {
-    return 'text-red-500 dark:text-red-400';
-  }
-  if (['土', '坤', '艮', '中', '戊', '己', '天芮', '天禽', '天任', '禽', '芮', '死门', '杜门', '九地'].some(x => elementStr.includes(x))) {
-    return 'text-amber-600 dark:text-amber-500';
-  }
-  if (['金', '乾', '兑', '庚', '辛', '天柱', '天心', '惊门', '开门', '太阴', '白虎', '九天'].some(x => elementStr.includes(x))) {
-    return 'text-yellow-500 dark:text-yellow-400'; // 或者金黄色/浅色
-  }
-  if (['水', '坎', '壬', '癸', '天蓬', '休门', '玄武'].some(x => elementStr.includes(x))) {
-    return 'text-blue-500 dark:text-blue-400';
-  }
-  
   return 'text-foreground';
 };
 
-export const getJiXiongColorClass = (jiXiong: string) => {
-  if (!jiXiong) return 'qmdj-ping';
-  if (jiXiong.includes('ji') && !jiXiong.includes('xiong')) return 'qmdj-ji';
-  if (jiXiong.includes('xiong')) return 'qmdj-xiong';
-  return 'qmdj-ping';
+export const getWuxingElement = (name: string): string => {
+  if (!name) return '';
+  if (ELEMENT_MAP[name]) return ELEMENT_MAP[name];
+  for (const [key, wuxing] of Object.entries(ELEMENT_MAP)) {
+    if (name.includes(key)) return wuxing;
+  }
+  return '';
 };
 
-export const getJiXiongBorderClass = (jiXiong: string) => {
+export const getJiXiongBorderClass = (jiXiong: string): string => {
   if (!jiXiong) return 'border-border';
-  if (jiXiong.includes('ji') && !jiXiong.includes('xiong')) return 'border-green-500/50 dark:border-green-400/50';
-  if (jiXiong.includes('xiong')) return 'border-red-500/50 dark:border-red-400/50';
+  if (jiXiong === 'da-ji') return 'border-[var(--color-wood)]/60';
+  if (jiXiong === 'ji') return 'border-[var(--color-wood)]/40';
+  if (jiXiong === 'da-xiong') return 'border-[var(--color-fire)]/60';
+  if (jiXiong === 'xiong') return 'border-[var(--color-fire)]/40';
   return 'border-border';
 };
 
-export const getJiXiongBgClass = (jiXiong: string) => {
-  if (!jiXiong) return 'bg-card';
-  if (jiXiong.includes('ji') && !jiXiong.includes('xiong')) return 'bg-green-50/50 dark:bg-green-950/20';
-  if (jiXiong.includes('xiong')) return 'bg-red-50/50 dark:bg-red-950/20';
-  return 'bg-card';
+export const getJiXiongIndicator = (jiXiong: string): { color: string; label: string } => {
+  if (jiXiong === 'da-ji') return { color: 'bg-green-500', label: '大吉' };
+  if (jiXiong === 'ji') return { color: 'bg-green-500/70', label: '吉' };
+  if (jiXiong === 'da-xiong') return { color: 'bg-red-500', label: '大凶' };
+  if (jiXiong === 'xiong') return { color: 'bg-red-500/70', label: '凶' };
+  return { color: 'bg-muted-foreground/30', label: '平' };
 };

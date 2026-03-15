@@ -1,40 +1,78 @@
+import { getWuxingColorClass } from '@/utils/qmdj-colors';
+
 export function BasicInfoPanel({ qMDJData }: { qMDJData: any }) {
   if (!qMDJData) {
     return (
-      <div className="animate-pulse flex flex-col gap-2">
-        <div className="h-4 bg-muted rounded w-full"></div>
-        <div className="h-4 bg-muted rounded w-3/4"></div>
-        <div className="h-8 bg-muted rounded w-full mt-2"></div>
+      <div className="animate-pulse flex flex-col gap-3">
+        <div className="h-4 bg-secondary rounded w-full" />
+        <div className="h-4 bg-secondary rounded w-3/4" />
+        <div className="h-16 bg-secondary rounded w-full" />
       </div>
     );
   }
-  
+
+  const pillars = [
+    { label: '年柱', value: qMDJData.siZhu?.year },
+    { label: '月柱', value: qMDJData.siZhu?.month },
+    { label: '日柱', value: qMDJData.siZhu?.day },
+    { label: '时柱', value: qMDJData.siZhu?.time },
+  ];
+
   return (
-    <div className="space-y-2 text-sm text-muted-foreground">
-      <p className="flex justify-between"><span>公历:</span> <span className="text-foreground">{qMDJData.basicInfo?.date}</span></p>
-      <p className="flex justify-between"><span>农历:</span> <span className="text-foreground">{qMDJData.basicInfo?.lunarDate}</span></p>
-      <div className="pt-2 pb-2">
-        <div className="flex justify-between items-center bg-secondary rounded p-2">
-          <span className="font-medium text-foreground">{qMDJData.siZhu?.year}</span>
-          <span className="font-medium text-foreground">{qMDJData.siZhu?.month}</span>
-          <span className="font-medium text-foreground">{qMDJData.siZhu?.day}</span>
-          <span className="font-medium text-foreground">{qMDJData.siZhu?.time}</span>
+    <div className="space-y-4">
+      {/* 日期信息 */}
+      <div className="space-y-1.5 text-sm">
+        <div className="flex justify-between items-center">
+          <span className="text-muted-foreground">公历</span>
+          <span className="text-foreground font-medium">{qMDJData.basicInfo?.date}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-muted-foreground">农历</span>
+          <span className="text-foreground font-medium">{qMDJData.basicInfo?.lunarDate}</span>
         </div>
       </div>
-      <p className="flex justify-between"><span>旬首:</span> <span className="text-foreground">{qMDJData.xunShou}</span></p>
-      <p className="flex justify-between"><span>局数:</span> <span className="text-foreground">{qMDJData.juShu?.fullName}</span></p>
-      <p className="flex justify-between">
-        <span>值符:</span> 
-        <span className="text-foreground">
-          {qMDJData.zhiFuXing} ({qMDJData.zhiFuGong}宫)
-        </span>
-      </p>
-      <p className="flex justify-between">
-        <span>值使:</span> 
-        <span className="text-foreground">
-          {qMDJData.zhiShiMen} ({qMDJData.zhiShiGong}宫)
-        </span>
-      </p>
+
+      {/* 四柱卡片 */}
+      <div className="grid grid-cols-4 gap-1.5">
+        {pillars.map((p) => {
+          const gan = p.value?.charAt(0) || '';
+          const zhi = p.value?.charAt(1) || '';
+          return (
+            <div key={p.label} className="flex flex-col items-center rounded-lg bg-secondary/50 border border-border/30 py-2 px-1">
+              <span className="text-[10px] text-muted-foreground mb-1">{p.label}</span>
+              <span className={`text-lg font-bold font-serif leading-none ${getWuxingColorClass(gan)}`}>{gan}</span>
+              <div className="w-3 h-px bg-border/50 my-1" />
+              <span className={`text-lg font-bold font-serif leading-none ${getWuxingColorClass(zhi)}`}>{zhi}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 局数信息 */}
+      <div className="space-y-1.5 text-sm">
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">旬首</span>
+          <span className="text-foreground font-medium font-serif">{qMDJData.xunShou}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">局数</span>
+          <span className="text-[var(--color-gold)] font-semibold">{qMDJData.juShu?.fullName}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">值符</span>
+          <span className="text-foreground font-medium">
+            {qMDJData.zhiFuXing}
+            <span className="text-muted-foreground text-xs ml-1">({qMDJData.zhiFuGong}宫)</span>
+          </span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">值使</span>
+          <span className="text-foreground font-medium">
+            {qMDJData.zhiShiMen}
+            <span className="text-muted-foreground text-xs ml-1">({qMDJData.zhiShiGong}宫)</span>
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

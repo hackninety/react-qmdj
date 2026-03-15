@@ -1,119 +1,151 @@
 @import "tailwindcss";
 
-@theme {
-  --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
+@custom-variant dark (&:is(.dark *));
 
-  --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
+/* ========== 暗色主题（默认） ========== */
+:root {
+  --background: oklch(0.13 0.015 270);
+  --foreground: oklch(0.92 0.01 80);
 
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --card: oklch(0.17 0.015 270);
+  --card-foreground: oklch(0.92 0.01 80);
 
-  --color-destructive: hsl(var(--destructive));
-  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --popover: oklch(0.17 0.015 270);
+  --popover-foreground: oklch(0.92 0.01 80);
 
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
+  --primary: oklch(0.78 0.12 85);
+  --primary-foreground: oklch(0.15 0.02 30);
 
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
+  --secondary: oklch(0.22 0.015 270);
+  --secondary-foreground: oklch(0.88 0.01 80);
 
-  --color-popover: hsl(var(--popover));
-  --color-popover-foreground: hsl(var(--popover-foreground));
+  --muted: oklch(0.22 0.012 270);
+  --muted-foreground: oklch(0.58 0.015 80);
 
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
+  --accent: oklch(0.78 0.12 85);
+  --accent-foreground: oklch(0.15 0.02 30);
 
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(0.95 0.01 80);
+
+  --border: oklch(0.26 0.015 270);
+  --input: oklch(0.26 0.015 270);
+  --ring: oklch(0.78 0.12 85);
+
+  --radius: 0.625rem;
+
+  /* 五行色 */
+  --color-wood: #22c55e;
+  --color-fire: #ef4444;
+  --color-earth: #d4a017;
+  --color-metal: #d4af37;
+  --color-water: #3b82f6;
+
+  /* 金色系 */
+  --color-gold: #D4AF37;
+  --color-gold-light: #F0D78C;
+  --color-gold-dark: #B8960C;
 }
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+/* ========== 亮色主题 ========== */
+.light {
+  --background: oklch(0.97 0.005 60);
+  --foreground: oklch(0.15 0.02 30);
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+  --card: oklch(0.99 0.002 60);
+  --card-foreground: oklch(0.15 0.02 30);
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+  --popover: oklch(0.99 0.002 60);
+  --popover-foreground: oklch(0.15 0.02 30);
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+  --primary: oklch(0.45 0.15 85);
+  --primary-foreground: oklch(0.98 0.01 80);
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+  --secondary: oklch(0.94 0.008 60);
+  --secondary-foreground: oklch(0.25 0.02 30);
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+  --muted: oklch(0.94 0.006 60);
+  --muted-foreground: oklch(0.45 0.02 30);
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+  --accent: oklch(0.45 0.15 85);
+  --accent-foreground: oklch(0.98 0.01 80);
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(0.98 0.01 80);
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+  --border: oklch(0.90 0.01 60);
+  --input: oklch(0.90 0.01 60);
+  --ring: oklch(0.45 0.15 85);
+}
 
-    --radius: 0.5rem;
-  }
+@theme inline {
+  --font-sans: 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-serif: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-  }
+  --color-wood: var(--color-wood);
+  --color-fire: var(--color-fire);
+  --color-earth: var(--color-earth);
+  --color-metal: var(--color-metal);
+  --color-water: var(--color-water);
+  --color-gold: var(--color-gold);
+  --color-gold-light: var(--color-gold-light);
+  --color-gold-dark: var(--color-gold-dark);
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+  html {
+    @apply font-sans scroll-smooth antialiased;
+  }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    background-image:
+      radial-gradient(ellipse at top, rgba(212, 175, 55, 0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at bottom right, rgba(123, 104, 238, 0.03) 0%, transparent 50%);
+    min-height: 100vh;
   }
 }
 
-/* 奇门吉凶颜色定义 */
-.qmdj-ji {
-  @apply text-green-600 dark:text-green-400;
-}
-.qmdj-xiong {
-  @apply text-red-600 dark:text-red-400;
-}
-.qmdj-ping {
-  @apply text-blue-600 dark:text-blue-400;
+@layer utilities {
+  .gold-text {
+    color: #D4AF37;
+  }
+  .gold-border {
+    border-color: rgba(212, 175, 55, 0.3);
+  }
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+  }
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
 }
