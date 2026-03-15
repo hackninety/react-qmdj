@@ -1,29 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { CalendarDays, Sun, Moon } from 'lucide-react';
 import { QimenPan } from '@/components/QimenPan';
 import { BasicInfoPanel } from '@/components/BasicInfoPanel';
 import { AnalysisPanel } from '@/components/AnalysisPanel';
+import { DatePickerDialog } from '@/components/DatePickerDialog';
 import * as qimen from '@/lib/qimen';
 
 function App() {
   const [qMDJData, setQMDJData] = useState<any>(null);
   const [isDark, setIsDark] = useState(true);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  useEffect(() => {
-    const now = new Date();
+  const doCalculate = useCallback((date: Date) => {
     try {
-      const data = qimen.calculate(now, {
+      const data = qimen.calculate(date, {
         type: '四柱',
         method: '时家',
         purpose: '综合',
         location: '默认位置'
       });
       setQMDJData(data);
+      setSelectedDate(date);
     } catch (error) {
       console.error('排盘计算失败:', error);
     }
   }, []);
+
+  useEffect(() => {
+    doCalculate(new Date());
+  }, [doCalculate]);
 
   const toggleTheme = () => {
     const html = document.documentElement;
@@ -35,6 +42,11 @@ function App() {
       html.classList.add('dark');
     }
     setIsDark(!isDark);
+  };
+
+  const handleDateConfirm = (date: Date) => {
+    doCalculate(date);
+    setPickerOpen(false);
   };
 
   return (
@@ -58,7 +70,10 @@ function App() {
             >
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
-            <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors text-sm">
+            <button
+              onClick={() => setPickerOpen(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors text-sm"
+            >
               <CalendarDays className="w-4 h-4" />
               <span>自定义排盘</span>
             </button>
@@ -117,6 +132,14 @@ function App() {
       <footer className="text-center py-4 text-xs text-muted-foreground/50 border-t border-border/30">
         奇门遁甲排盘系统 · 算法引擎 v1.0
       </footer>
+
+      {/* 自定义排盘弹窗 */}
+      <DatePickerDialog
+        open={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onConfirm={handleDateConfirm}
+        currentDate={selectedDate}
+      />
     </div>
   );
 }
