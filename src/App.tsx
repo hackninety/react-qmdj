@@ -7,37 +7,35 @@ import { AnalysisPanel } from '@/components/AnalysisPanel';
 import { GongDetailPanel } from '@/components/GongDetailPanel';
 import { JsonExportPanel } from '@/components/JsonExportPanel';
 import { DatePickerDialog, type QimenOptions } from '@/components/DatePickerDialog';
-import { toTrueSolarTime, nowBeijing } from '@/utils/true-solar-time';
+import { toTrueSolarTime, toBeijingTime } from '@/utils/true-solar-time';
 import * as qimen from '@/lib/qimen';
 
 function App() {
   const [qMDJData, setQMDJData] = useState<any>(null);
   const [isDark, setIsDark] = useState(true);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date>(nowBeijing());
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [trueSolarInfo, setTrueSolarInfo] = useState<{ offsetMinutes: number; longitude: number; trueSolarDate: Date } | null>(null);
 
-  const doCalculate = useCallback((date: Date, opts?: Partial<QimenOptions>) => {
+  // 默认排盘：使用本地系统时间，不做时区转换或真太阳时修正
+  const doCalculate = useCallback((date: Date) => {
     try {
-      const lng = opts?.longitude ?? 120; // 默认北京时间基准经度（无修正）
-      const { trueSolarDate, offsetMinutes } = toTrueSolarTime(date, lng);
-
-      const data = qimen.calculate(trueSolarDate, {
-        type: opts?.type || '四柱',
-        method: opts?.method || '时家',
-        purpose: opts?.purpose || '综合',
-        location: opts?.location || '默认位置'
+      const data = qimen.calculate(date, {
+        type: '四柱',
+        method: '时家',
+        purpose: '综合',
+        location: '默认位置'
       });
       setQMDJData(data);
       setSelectedDate(date);
-      setTrueSolarInfo({ offsetMinutes, longitude: lng, trueSolarDate });
+      setTrueSolarInfo(null); // 默认模式不显示真太阳时
     } catch (error) {
       console.error('排盘计算失败:', error);
     }
   }, []);
 
   useEffect(() => {
-    doCalculate(nowBeijing());
+    doCalculate(new Date());
   }, [doCalculate]);
 
   const toggleTheme = () => {
@@ -52,8 +50,25 @@ function App() {
     setIsDark(!isDark);
   };
 
+  // 自定义排盘：转换为北京时间 → 真太阳时修正
   const handleDateConfirm = (options: QimenOptions) => {
-    doCalculate(options.date, options);
+    try {
+      const beijingDate = toBeijingTime(options.date);
+      const lng = options.longitude;
+      const { trueSolarDate, offsetMinutes } = toTrueSolarTime(beijingDate, lng);
+
+      const data = qimen.calculate(trueSolarDate, {
+        type: options.type,
+        method: options.method,
+        purpose: options.purpose,
+        location: options.location
+      });
+      setQMDJData(data);
+      setSelectedDate(options.date);
+      setTrueSolarInfo({ offsetMinutes, longitude: lng, trueSolarDate });
+    } catch (error) {
+      console.error('自定义排盘计算失败:', error);
+    }
     setPickerOpen(false);
   };
 
