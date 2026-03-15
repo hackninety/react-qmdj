@@ -21,7 +21,6 @@ function buildExportJSON(qMDJData: any, trueSolarInfo?: { offsetMinutes: number;
         八神: g.shen,
         天盘干: qMDJData.sanQiLiuYi?.[i] || '',
         吉凶: g.jiXiongText || '平',
-        解释: g.explain || '',
       };
     }
   }
