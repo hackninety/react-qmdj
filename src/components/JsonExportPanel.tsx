@@ -36,6 +36,7 @@ function buildExportJSON(qMDJData: any, trueSolarInfo?: { offsetMinutes: number;
       排盘类型: qMDJData.basicInfo?.type,
       排盘方法: qMDJData.basicInfo?.method,
       排盘目的: qMDJData.basicInfo?.purpose,
+      时区: Intl.DateTimeFormat().resolvedOptions().timeZone,
       地点: qMDJData.basicInfo?.location,
       ...(trueSolarInfo ? {
         真太阳时: {
