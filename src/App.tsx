@@ -91,15 +91,15 @@ function App() {
         <div className="h-px bg-gradient-to-r from-transparent via-[var(--color-gold)]/30 to-transparent" />
       </header>
 
-      {/* 主体 */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col lg:flex-row gap-6">
+      {/* 主体 — 单列从上到下排列 */}
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-6 space-y-6">
 
-        {/* 左侧信息栏 */}
-        <motion.aside
-          className="w-full lg:w-72 xl:w-80 space-y-4 shrink-0"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4, ease: 'easeOut' }}
+        {/* 基础信息 + 断局指引 — 并排两栏 */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
         >
           <div className="glass-card rounded-xl p-4">
             <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
@@ -108,7 +108,6 @@ function App() {
             </h2>
             <BasicInfoPanel qMDJData={qMDJData} trueSolarInfo={trueSolarInfo} />
           </div>
-
           <div className="glass-card rounded-xl p-4">
             <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
               <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
@@ -116,18 +115,15 @@ function App() {
             </h2>
             <AnalysisPanel qMDJData={qMDJData} />
           </div>
+        </motion.div>
 
-          <div className="glass-card rounded-xl p-4">
-            <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
-              <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
-              数据导出 & AI 分析
-            </h2>
-            <JsonExportPanel qMDJData={qMDJData} trueSolarInfo={trueSolarInfo} />
-          </div>
-        </motion.aside>
-
-        {/* 右侧九宫格 */}
-        <section className="flex-1 flex flex-col items-center gap-6">
+        {/* 九宫格 */}
+        <motion.div
+          className="flex justify-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
           <div className="w-full max-w-2xl">
             {qMDJData ? (
               <QimenPan qimenData={qMDJData} />
@@ -140,18 +136,39 @@ function App() {
               </div>
             )}
           </div>
+        </motion.div>
 
-          {/* 九宫详解 */}
-          {qMDJData && (
-            <div className="w-full max-w-4xl glass-card rounded-xl p-4">
-              <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
-                <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
-                九宫详解
-              </h2>
-              <GongDetailPanel qMDJData={qMDJData} />
-            </div>
-          )}
-        </section>
+        {/* 九宫详解 */}
+        {qMDJData && (
+          <motion.div
+            className="glass-card rounded-xl p-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+          >
+            <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
+              <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
+              九宫详解
+            </h2>
+            <GongDetailPanel qMDJData={qMDJData} />
+          </motion.div>
+        )}
+
+        {/* 数据导出 & AI 分析 */}
+        {qMDJData && (
+          <motion.div
+            className="glass-card rounded-xl p-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+          >
+            <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
+              <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
+              数据导出 & AI 分析
+            </h2>
+            <JsonExportPanel qMDJData={qMDJData} trueSolarInfo={trueSolarInfo} />
+          </motion.div>
+        )}
 
       </main>
 
