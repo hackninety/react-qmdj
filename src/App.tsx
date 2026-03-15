@@ -4,6 +4,7 @@ import { CalendarDays, Sun, Moon } from 'lucide-react';
 import { QimenPan } from '@/components/QimenPan';
 import { BasicInfoPanel } from '@/components/BasicInfoPanel';
 import { AnalysisPanel } from '@/components/AnalysisPanel';
+import { GongDetailPanel } from '@/components/GongDetailPanel';
 import { DatePickerDialog, type QimenOptions } from '@/components/DatePickerDialog';
 import * as qimen from '@/lib/qimen';
 
@@ -111,7 +112,7 @@ function App() {
         </motion.aside>
 
         {/* 右侧九宫格 */}
-        <section className="flex-1 flex justify-center items-start">
+        <section className="flex-1 flex flex-col items-center gap-6">
           <div className="w-full max-w-2xl">
             {qMDJData ? (
               <QimenPan qimenData={qMDJData} />
@@ -124,6 +125,17 @@ function App() {
               </div>
             )}
           </div>
+
+          {/* 九宫详解 */}
+          {qMDJData && (
+            <div className="w-full max-w-4xl glass-card rounded-xl p-4">
+              <h2 className="text-sm font-semibold text-[var(--color-gold)] uppercase tracking-wider mb-3 flex items-center gap-2">
+                <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
+                九宫详解
+              </h2>
+              <GongDetailPanel qMDJData={qMDJData} />
+            </div>
+          )}
         </section>
 
       </main>

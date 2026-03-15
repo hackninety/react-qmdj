@@ -25,6 +25,10 @@ const ELEMENT_MAP: Record<string, string> = {
   '戊': 'tu', '己': 'tu',
   '庚': 'jin', '辛': 'jin',
   '壬': 'shui', '癸': 'shui',
+  // 地支
+  '子': 'shui', '丑': 'tu', '寅': 'mu', '卯': 'mu',
+  '辰': 'tu', '巳': 'huo', '午': 'huo', '未': 'tu',
+  '申': 'jin', '酉': 'jin', '戌': 'tu', '亥': 'shui',
   // 八卦/宫名
   '坎': 'shui', '坤': 'tu', '震': 'mu', '巽': 'mu',
   '中': 'tu', '乾': 'jin', '兑': 'jin', '艮': 'tu', '离': 'huo',
