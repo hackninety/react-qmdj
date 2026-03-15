@@ -4,7 +4,7 @@ import { CalendarDays, Sun, Moon } from 'lucide-react';
 import { QimenPan } from '@/components/QimenPan';
 import { BasicInfoPanel } from '@/components/BasicInfoPanel';
 import { AnalysisPanel } from '@/components/AnalysisPanel';
-import { DatePickerDialog } from '@/components/DatePickerDialog';
+import { DatePickerDialog, type QimenOptions } from '@/components/DatePickerDialog';
 import * as qimen from '@/lib/qimen';
 
 function App() {
@@ -13,13 +13,13 @@ function App() {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-  const doCalculate = useCallback((date: Date) => {
+  const doCalculate = useCallback((date: Date, opts?: Partial<QimenOptions>) => {
     try {
       const data = qimen.calculate(date, {
-        type: '四柱',
-        method: '时家',
-        purpose: '综合',
-        location: '默认位置'
+        type: opts?.type || '四柱',
+        method: opts?.method || '时家',
+        purpose: opts?.purpose || '综合',
+        location: opts?.location || '默认位置'
       });
       setQMDJData(data);
       setSelectedDate(date);
@@ -44,8 +44,8 @@ function App() {
     setIsDark(!isDark);
   };
 
-  const handleDateConfirm = (date: Date) => {
-    doCalculate(date);
+  const handleDateConfirm = (options: QimenOptions) => {
+    doCalculate(options.date, options);
     setPickerOpen(false);
   };
 
