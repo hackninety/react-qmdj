@@ -20,11 +20,13 @@ function App() {
   // 默认排盘：使用本地系统时间，不做时区转换或真太阳时修正
   const doCalculate = useCallback((date: Date) => {
     try {
+      // 通过系统时区获取当前地区（如 "Asia/Tokyo"）
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '未知时区';
       const data = qimen.calculate(date, {
         type: '四柱',
         method: '时家',
         purpose: '综合',
-        location: '默认位置'
+        location: tz
       });
       setQMDJData(data);
       setSelectedDate(date);
