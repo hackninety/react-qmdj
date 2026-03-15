@@ -9,6 +9,7 @@ export interface QimenOptions {
   method: string;
   purpose: string;
   location: string;
+  longitude: number;
 }
 
 interface DatePickerDialogProps {
@@ -94,7 +95,8 @@ export function DatePickerDialog({ open, onClose, onConfirm, currentDate }: Date
     const [y, m, d] = dateStr.split('-').map(Number);
     const [h, min] = timeStr.split(':').map(Number);
     const date = new Date(y, m - 1, d, h, min);
-    onConfirm({ date, type, method, purpose, location: locationName });
+    const lng = districts[districtIdx]?.longitude ?? 116.41;
+    onConfirm({ date, type, method, purpose, location: locationName, longitude: lng });
   };
 
   const handleResetNow = () => {

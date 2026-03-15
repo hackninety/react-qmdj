@@ -6,6 +6,7 @@ import { BasicInfoPanel } from '@/components/BasicInfoPanel';
 import { AnalysisPanel } from '@/components/AnalysisPanel';
 import { GongDetailPanel } from '@/components/GongDetailPanel';
 import { DatePickerDialog, type QimenOptions } from '@/components/DatePickerDialog';
+import { toTrueSolarTime } from '@/utils/true-solar-time';
 import * as qimen from '@/lib/qimen';
 
 function App() {
@@ -13,10 +14,14 @@ function App() {
   const [isDark, setIsDark] = useState(true);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [trueSolarInfo, setTrueSolarInfo] = useState<{ offsetMinutes: number; longitude: number } | null>(null);
 
   const doCalculate = useCallback((date: Date, opts?: Partial<QimenOptions>) => {
     try {
-      const data = qimen.calculate(date, {
+      const lng = opts?.longitude ?? 120; // 默认北京时间基准经度（无修正）
+      const { trueSolarDate, offsetMinutes } = toTrueSolarTime(date, lng);
+
+      const data = qimen.calculate(trueSolarDate, {
         type: opts?.type || '四柱',
         method: opts?.method || '时家',
         purpose: opts?.purpose || '综合',
@@ -24,6 +29,7 @@ function App() {
       });
       setQMDJData(data);
       setSelectedDate(date);
+      setTrueSolarInfo({ offsetMinutes, longitude: lng });
     } catch (error) {
       console.error('排盘计算失败:', error);
     }
@@ -99,7 +105,7 @@ function App() {
               <div className="w-1 h-4 rounded-full bg-[var(--color-gold)]" />
               基础信息
             </h2>
-            <BasicInfoPanel qMDJData={qMDJData} />
+            <BasicInfoPanel qMDJData={qMDJData} trueSolarInfo={trueSolarInfo} />
           </div>
 
           <div className="glass-card rounded-xl p-4">

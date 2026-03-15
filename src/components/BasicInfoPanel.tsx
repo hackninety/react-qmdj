@@ -1,6 +1,11 @@
 import { getWuxingColorClass } from '@/utils/qmdj-colors';
 
-export function BasicInfoPanel({ qMDJData }: { qMDJData: any }) {
+interface TrueSolarInfo {
+  offsetMinutes: number;
+  longitude: number;
+}
+
+export function BasicInfoPanel({ qMDJData, trueSolarInfo }: { qMDJData: any; trueSolarInfo?: TrueSolarInfo | null }) {
   if (!qMDJData) {
     return (
       <div className="animate-pulse flex flex-col gap-3">
@@ -18,6 +23,9 @@ export function BasicInfoPanel({ qMDJData }: { qMDJData: any }) {
     { label: '时柱', value: qMDJData.siZhu?.time },
   ];
 
+  const offsetSign = (trueSolarInfo?.offsetMinutes ?? 0) >= 0 ? '+' : '';
+  const offsetStr = trueSolarInfo ? `${offsetSign}${trueSolarInfo.offsetMinutes.toFixed(1)}分` : '';
+
   return (
     <div className="space-y-4">
       {/* 日期信息 */}
@@ -30,6 +38,14 @@ export function BasicInfoPanel({ qMDJData }: { qMDJData: any }) {
           <span className="text-muted-foreground">农历</span>
           <span className="text-foreground font-medium">{qMDJData.basicInfo?.lunarDate}</span>
         </div>
+        {trueSolarInfo && (
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground">真太阳时</span>
+            <span className="text-xs text-[var(--color-gold)]">
+              E{trueSolarInfo.longitude.toFixed(1)}° · {offsetStr}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* 四柱卡片 */}
