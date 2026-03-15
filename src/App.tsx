@@ -12,10 +12,21 @@ import * as qimen from '@/lib/qimen';
 
 function App() {
   const [qMDJData, setQMDJData] = useState<any>(null);
-  const [isDark, setIsDark] = useState(true);
+  // 根据系统时间自动判断：18:00~06:00 为暗色，06:00~18:00 为亮色
+  const [isDark, setIsDark] = useState(() => {
+    const h = new Date().getHours();
+    return h >= 18 || h < 6;
+  });
   const [pickerOpen, setPickerOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [trueSolarInfo, setTrueSolarInfo] = useState<{ offsetMinutes: number; longitude: number; trueSolarDate: Date } | null>(null);
+
+  // 初始化时同步 HTML class
+  useEffect(() => {
+    const html = document.documentElement;
+    html.classList.toggle('dark', isDark);
+    html.classList.toggle('light', !isDark);
+  }, [isDark]);
 
   // 默认排盘：使用本地系统时间，不做时区转换或真太阳时修正
   const doCalculate = useCallback((date: Date) => {
@@ -40,17 +51,7 @@ function App() {
     doCalculate(new Date());
   }, [doCalculate]);
 
-  const toggleTheme = () => {
-    const html = document.documentElement;
-    if (isDark) {
-      html.classList.remove('dark');
-      html.classList.add('light');
-    } else {
-      html.classList.remove('light');
-      html.classList.add('dark');
-    }
-    setIsDark(!isDark);
-  };
+  const toggleTheme = () => setIsDark(prev => !prev);
 
   // 自定义排盘：有经度时转北京时间+真太阳时，无经度时沿用本地时间
   const handleDateConfirm = (options: QimenOptions) => {
